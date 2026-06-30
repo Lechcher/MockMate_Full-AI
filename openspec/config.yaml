@@ -1,0 +1,17 @@
+schema: spec-driven
+
+context: |
+  App: MockMate - Mobile app (iOS & Android)
+  Stack: React Native (Expo), Sanity CMS, AI SDK (Vercel), RevenueCat, Zod, Jest, Uniwind (Tailwind CSS v4)
+  Styling: Uniwind className props only, no inline styles
+  Env vars: EXPO_PUBLIC_* for client, process.env.* for server. Examples in .env.example only.
+  See AGENTS.md for full guidelines.
+
+rules:
+  proposal:
+    - Reference AGENTS.md stack when proposing technology choices
+    - Note any new dependencies that would need adding to the Stack table
+  tasks:
+    - Break tasks into chunks of max 2 hours
+    - Include env var additions in .env.example when relevant
+    - Note Uniwind className usage for UI tasks
