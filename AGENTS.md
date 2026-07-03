@@ -18,6 +18,9 @@
 | Testing | Jest |
 | Icons | Lucide React Native |
 | Styling | Uniwind (Tailwind CSS v4 for React Native) |
+| Authentication | Auth0 (Google OAuth) |
+| State Management | Zustand + React Query |
+| Dev Client | expo-dev-client |
 
 ## Rules
 
@@ -68,6 +71,23 @@
 
 - Use AI SDK for all LLM interactions.
 - Keep prompts in dedicated files, not inline strings.
+- Configure OpenAI-compatible endpoint via `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL` environment variables.
+- Use `createOpenAI` from `@ai-sdk/openai` to create a client with custom base URL.
+- AI chat API route is at `/api/chat+api.ts` and uses streaming responses.
+
+#### Text-to-Speech (TTS)
+- API route: `/api/tts+api.ts`
+- Hook: `useTTS()` from `src/hooks/useTTS.ts`
+- Model configured via `OPENAI_TTS_MODEL` environment variable
+- Returns base64 audio, plays via Expo AV
+- Usage: `const { generateAndPlay, stop, isGenerating } = useTTS()`
+
+#### Speech-to-Text (STT)
+- API route: `/api/stt+api.ts`
+- Hook: `useSTT()` from `src/hooks/useSTT.ts`
+- Model configured via `OPENAI_STT_MODEL` environment variable
+- Records audio via Expo AV, transcribes to text
+- Usage: `const { startRecording, stopRecording, transcribeAudio, isRecording } = useSTT()`
 
 ### Payments
 
