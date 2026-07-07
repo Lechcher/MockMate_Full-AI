@@ -1,108 +1,135 @@
 /**
- * Welcome screen - Google OAuth login
+ * Welcome screen - Google OAuth login (Figma "Welcome & Login" 5:644)
  */
 
-import React, { useState } from 'react';
-import { View, Image, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Text } from '../../components/atoms/Text';
-import { Button } from '../../components/atoms/Button';
-import { Icon } from '../../components/atoms/Icon';
-import { useAuth } from '../../hooks/useAuth';
+import { useState } from "react";
+import { Image, ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from "../../components/atoms/Button";
+import { Icon } from "../../components/atoms/Icon";
+import { Text } from "../../components/atoms/Text";
+import { useAuth } from "../../hooks/useAuth";
+
+const heroIllustration = require("../../../assets/images/Wellcome & Login/wellcome.png");
+const avatar1 = require("../../../assets/images/Wellcome & Login/badge-1.png");
+const avatar2 = require("../../../assets/images/Wellcome & Login/badge-2.png");
+const avatar3 = require("../../../assets/images/Wellcome & Login/badge-3.png");
 
 export default function WelcomeScreen() {
-  const { login, isLoading } = useAuth();
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+	const { login, isLoading } = useAuth();
+	const [error, setError] = useState<string | null>(null);
 
-  const handleGoogleLogin = async () => {
-    try {
-      setError(null);
-      await login();
-      // Navigation is handled by RequireAuth component
-    } catch (err: any) {
-      console.error('Login error:', err);
-      
-      // Handle specific error cases
-      if (err.message?.includes('user_cancelled') || err.message?.includes('a0.session.user_cancelled')) {
-        setError('Login cancelled. Please try again.');
-      } else if (err.message?.includes('network')) {
-        setError('Network error. Please check your connection.');
-      } else {
-        setError('Login failed. Please try again.');
-      }
-    }
-  };
+	const handleGoogleLogin = async () => {
+		try {
+			setError(null);
+			await login();
+		} catch (err: unknown) {
+			const message = err instanceof Error ? err.message : String(err);
+			console.error("Login error:", err);
 
-  return (
-    <View className="flex-1 bg-white items-center justify-center px-6">
-      {/* Logo placeholder */}
-      <View className="items-center mb-12">
-        <View className="w-24 h-24 bg-blue-600 rounded-3xl items-center justify-center mb-4">
-          <Icon name="MessageSquare" size={48} color="white" />
-        </View>
-        
-        <Text variant="heading" className="text-center mb-2">
-          MockMate
-        </Text>
-        
-        <Text variant="body" color="text-gray-600" className="text-center">
-          AI Mock Interview Practice
-        </Text>
-      </View>
+			if (
+				message.includes("cancelled") ||
+				message.includes("cancel")
+			) {
+				setError("Login cancelled. Please try again.");
+			} else if (message.includes("network")) {
+				setError("Network error. Please check your connection.");
+			} else {
+				setError("Login failed. Please try again.");
+			}
+		}
+	};
 
-      {/* Main content */}
-      <View className="w-full max-w-sm">
-        <Text variant="subheading" className="text-center mb-2">
-          Welcome
-        </Text>
-        
-        <Text variant="body" color="text-gray-600" className="text-center mb-8">
-          Practice interviews with AI-powered feedback
-        </Text>
+	return (
+		<SafeAreaView className="flex-1 bg-slate-50">
+			<ScrollView
+				className="flex-1"
+				contentContainerClassName="items-center justify-center px-7 py-10 gap-14"
+				showsVerticalScrollIndicator={false}
+			>
+				{/* Trust badge + Hero illustration */}
+				<View className="items-center gap-6">
+					{/* Trust badge */}
+					<View className="flex-row items-center bg-white border border-slate-200 rounded-full px-4 py-2 shadow-sm gap-2">
+						<View className="flex-row">
+							<Image
+								source={avatar1}
+								className="w-6 h-6 rounded-full border-2 border-white"
+							/>
+							<Image
+								source={avatar2}
+								className="w-6 h-6 rounded-full border-2 border-white -ml-2"
+							/>
+							<Image
+								source={avatar3}
+								className="w-6 h-6 rounded-full border-2 border-white -ml-2"
+							/>
+						</View>
+						<Text className="text-xs font-semibold text-gray-600">
+							Trusted by 10k+ candidates
+						</Text>
+					</View>
 
-        {/* Google Sign In Button */}
-        <Button
-          variant="google"
-          onPress={handleGoogleLogin}
-          disabled={isLoading}
-          loading={isLoading}
-          className="w-full mb-4"
-        >
-          {!isLoading && (
-            <View className="flex-row items-center">
-              <Icon name="Chrome" size={20} color="#4285F4" className="mr-2" />
-              <Text className="text-gray-900 font-semibold">
-                Continue with Google
-              </Text>
-            </View>
-          )}
-        </Button>
+					{/* Hero illustration */}
+					<View className="items-center">
+						<Image
+							source={heroIllustration}
+							className="w-[360px] h-[360px] rounded-3xl"
+							resizeMode="cover"
+						/>
+					</View>
+				</View>
 
-        {/* Error message */}
-        {error && (
-          <View className="bg-red-50 rounded-xl p-4 mb-4">
-            <Text variant="caption" color="text-red-800" className="text-center">
-              {error}
-            </Text>
-          </View>
-        )}
+				{/* Headlines + actions */}
+				<View className="items-center w-full gap-9">
+					<View className="items-center gap-3 w-full">
+						<Text className="text-3xl font-extrabold text-center text-slate-900 leading-tight">
+							Master Your{" "}
+							<Text className="text-accent-green">Interview Skills</Text>
+						</Text>
+						<Text className="text-base font-medium text-center text-gray-600">
+							Practice with AI and get hired faster. Level up your career today.
+						</Text>
+					</View>
 
-        {/* Loading state */}
-        {isLoading && (
-          <View className="items-center mt-4">
-            <ActivityIndicator size="small" color="#3B82F6" />
-            <Text variant="caption" color="text-gray-600" className="mt-2">
-              Signing in...
-            </Text>
-          </View>
-        )}
+					{/* Google sign in */}
+					<View className="w-full gap-4">
+						<Button
+							variant="google"
+							size="lg"
+							onPress={handleGoogleLogin}
+							disabled={isLoading}
+							loading={isLoading}
+							className="w-full rounded-2xl"
+						>
+							{!isLoading && (
+								<View className="flex-row items-center gap-4">
+									<Icon name="Sparkles" size={20} color="#2563EB" />
+									<Text className="text-slate-900 font-semibold">
+										Continue with Google
+									</Text>
+								</View>
+							)}
+						</Button>
 
-        {/* Terms */}
-        <Text variant="caption" color="text-gray-500" className="text-center mt-8">
-          By continuing, you agree to our Terms of Service and Privacy Policy
-        </Text>
-      </View>
-    </View>
-  );
+						{/* Error */}
+						{error && (
+							<View className="bg-red-50 rounded-xl p-3">
+								<Text variant="caption" className="text-center text-red-800">
+									{error}
+								</Text>
+							</View>
+						)}
+					</View>
+
+					{/* Legal */}
+					<Text className="text-xs text-center text-gray-500">
+						By continuing, you agree to our{" "}
+						<Text className="underline">Terms</Text> &{" "}
+						<Text className="underline">Privacy Policy</Text>
+					</Text>
+				</View>
+			</ScrollView>
+		</SafeAreaView>
+	);
 }

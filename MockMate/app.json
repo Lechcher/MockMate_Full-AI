@@ -8,6 +8,7 @@
     "scheme": "mockmate",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.liberian.mockmate",
       "icon": "./assets/expo.icon"
     },
     "android": {
@@ -18,7 +19,12 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.MockMate"
+      "package": "com.anonymous.MockMate",
+      "packaging": {
+        "pickFirsts": [
+          "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+        ]
+      }
     },
     "web": {
       "output": "static",
@@ -38,17 +44,18 @@
       ],
       "expo-font",
       "expo-web-browser",
-      [
-        "react-native-auth0",
-        {
-          "domain": "mockmate.us.auth0.com"
-        }
-      ],
-      "expo-dev-client"
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "303a51e9-8988-43aa-871b-b92c09c5a035"
+      }
+    },
+    "owner": "liberian"
   }
 }

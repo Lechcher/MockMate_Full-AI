@@ -1,88 +1,127 @@
 /**
- * useAuth hook
- * 
- * Provides authentication functionality via Auth0 with Google OAuth.
- * Wraps react-native-auth0 with typed helpers and error handling.
- * 
- * @example
- * ```tsx
- * import { useAuth } from '@/hooks/useAuth';
- * 
- * function WelcomeScreen() {
- *   const { login, isLoading, error } = useAuth();
- * 
- *   const handleLogin = async () => {
- *     try {
- *       await login();
- *       // User redirected to home on success
- *     } catch (err) {
- *       console.error('Login failed:', err);
- *     }
- *   };
- * 
- *   return (
- *     <Button onPress={handleLogin} disabled={isLoading}>
- *       Continue with Google
- *     </Button>
- *   );
- * }
- * ```
- * 
- * @returns {Object} Authentication state and methods
- * @returns {Auth0User | null} user - Current authenticated user or null
- * @returns {boolean} isLoading - Auth0 loading state
- * @returns {Error | null} error - Auth0 error if any
- * @returns {() => Promise<void>} login - Initiates Google OAuth login flow
- * @returns {() => Promise<void>} logout - Clears session and logs out user
- * @returns {() => Promise<string>} getAccessToken - Retrieves current access token
+ * useAuth hook — public auth bridge.
+ *
+ * Returns { user, isLoading, error, login, logout, getAccessToken }.
+ * Backed by Appwrite in production, synthetic user in dev bypass.
+ * Consumers unchanged — same shape, same semantics.
  */
 
-import { useAuth0 } from 'react-native-auth0';
-import { Auth0User } from '../types/user';
+import { useState } from "react";
+import type { AppwriteUser } from "../../core/appwrite";
+import { createJWT, login, logout } from "../../core/appwrite";
+import { useAuthContext } from "../../lib/auth/AuthProvider";
+import type { Auth0User } from "../../types/user";
 
-export function useAuth() {
-  const auth0 = useAuth0();
+interface UseAuthResult {
+	user: Auth0User | null;
+	isLoading: boolean;
+	error: Error | null;
+	login: () => Promise<void>;
+	logout: () => Promise<void>;
+	getAccessToken: () => Promise<string>;
+}
 
-  const login = async () => {
-    try {
-      await auth0.authorize({
-        connection: 'google-oauth2',
-        scope: 'openid profile email',
-      });
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    }
-  };
+function mapAppwriteUser(u: AppwriteUser): Auth0User {
+	return {
+		id: u.$id,
+		sub: u.$id,
+		email: u.email,
+		email_verified: u.emailVerification,
+		name: u.name,
+		picture: u.avatar || "",
+		updated_at: u.$updatedAt,
+	};
+}
 
-  const logout = async () => {
-    try {
-      await auth0.clearSession();
-    } catch (error) {
-      console.error('Logout error:', error);
-      throw error;
-    }
-  };
+function devBypassUser(): Auth0User {
+	return {
+		id: "appwrite-dev-bypass",
+		sub: "appwrite-dev-bypass",
+		email: "dev@mockmate.local",
+		email_verified: true,
+		name: "Dev Bypass",
+		picture: "",
+		updated_at: new Date().toISOString(),
+	};
+}
 
-  const getAccessToken = async (): Promise<string> => {
-    try {
-      const credentials = await auth0.getCredentials();
-      if (!credentials?.accessToken) {
-        throw new Error('No access token available');
-      }
-      return credentials.accessToken;
-    } catch (error) {
-      console.error('Get access token error:', error);
-      throw error;
-    }
-  };
+let devUserMem: Auth0User | null = null;
 
-  return {
-    user: auth0.user as Auth0User | null,
-    isLoading: auth0.isLoading,
-    error: auth0.error,
-    login,
-    logout,
-    getAccessToken,
-  };
+export function useAuth(): UseAuthResult {
+	const bypass = process.env.EXPO_PUBLIC_DEV_AUTH_BYPASS === "true";
+
+	// Dev bypass: synthetic user, no Appwrite calls
+	const [devUser, setDevUser] = useState<Auth0User | null>(() => {
+		if (bypass) {
+			if (!devUserMem) devUserMem = devBypassUser();
+			return devUserMem;
+		}
+		return null;
+	});
+	const [actionError, setActionError] = useState<Error | null>(null);
+
+	// Always call this hook unconditionally (React hook rules).
+	// In bypass mode the returned values are ignored.
+	const {
+		user: appwriteUser,
+		isLoading: appwriteLoading,
+		refetch,
+	} = useAuthContext();
+
+	if (bypass) {
+		return {
+			user: devUser,
+			isLoading: false,
+			error: actionError,
+			login: async () => {
+				devUserMem = devBypassUser();
+				setDevUser(devUserMem);
+			},
+			logout: async () => {
+				devUserMem = null;
+				setDevUser(null);
+			},
+			getAccessToken: async () => "dev-bypass-access-token",
+		};
+	}
+
+	// Real mode: read from Appwrite context
+	const user = appwriteUser ? mapAppwriteUser(appwriteUser) : null;
+
+	return {
+		user,
+		isLoading: appwriteLoading,
+		error: actionError,
+		login: async () => {
+			try {
+				setActionError(null);
+				const ok = await login();
+				if (ok) {
+					await refetch();
+				} else {
+					setActionError(new Error("Google login failed"));
+				}
+			} catch (err: unknown) {
+				const message = err instanceof Error ? err.message : String(err);
+				setActionError(new Error(message));
+			}
+		},
+		logout: async () => {
+			try {
+				await logout();
+				// Refetch to clear user state
+				await refetch();
+			} catch (err: unknown) {
+				const message = err instanceof Error ? err.message : String(err);
+				setActionError(new Error(message));
+			}
+		},
+		getAccessToken: async () => {
+			const jwt = await createJWT();
+			if (!jwt) {
+				throw new Error("Unable to create Appwrite JWT");
+			}
+			return jwt;
+		},
+	};
 }

@@ -16,11 +16,21 @@
 | Payments | RevenueCat |
 | Validation | Zod |
 | Testing | Jest |
+| Linting / Formatting | BiomeJS (replaces Prettier + ESLint) |
 | Icons | Lucide React Native |
 | Styling | Uniwind (Tailwind CSS v4 for React Native) |
-| Authentication | Auth0 (Google OAuth) |
+| Authentication | Appwrite (Google OAuth via `react-native-appwrite`) |
 | State Management | Zustand + React Query |
-| Dev Client | expo-dev-client |
+
+## Design
+
+App designs live in **`designs/`** folder (17 PNGs: Home, Explore, Quests, Shop, Profile, Interview Detail, Interview Mode, Text/Voice Interview, Results, History, Saved, VIP, Subscription, Splash, Streak Popup, etc.). Figma source: https://www.figma.com/design/RX73sEuTfKKNh66AzU408Q/AI-Mock-Interviewer?m=auto&t=YqmrJrCQfzCmRK5q-6
+
+For detailed mobile styling rules, screen layouts, design tokens, and color palettes, see [**`DESIGN-MOBILE.md`**](DESIGN-MOBILE.md).
+
+> For Google OAuth setup, see [`docs/AUTH_SETUP.md`](docs/AUTH_SETUP.md).
+> Run `npm run check:native` in `MockMate/` to verify the dev client autolinks any
+> remaining native modules (RevenueCat, gesture-handler, etc.).
 
 ## Rules
 
@@ -66,6 +76,13 @@
 ### Validation
 
 - Use Zod schemas at trust boundaries (API responses, form input, env parsing).
+
+### Linting & Formatting
+
+- BiomeJS formats and lints the codebase. Do not add Prettier or ESLint configs.
+- Run `npx @biomejs/biome check --write` from `MockMate/` to format + fix safe lint issues.
+- Import order is handled by Biome's `assist.actions.source.organizeImports`. Do not add separate import-sort plugins.
+- Leave non-trivial lint suppressions with an inline `// biome-ignore` comment and a one-line reason.
 
 ### AI
 

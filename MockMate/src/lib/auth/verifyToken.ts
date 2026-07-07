@@ -1,50 +1,70 @@
 /**
- * Auth0 JWT verification using jose
- * 
- * Verifies JWT tokens from Auth0 using JWKS
+ * Appwrite JWT token verification using jose.
+ *
+ * Verifies HMAC-signed Appwrite JWTs against the project secret.
  */
 
-import { jwtVerify, createRemoteJWKSet } from 'jose';
+import { jwtVerify } from "jose";
 
-const domain = process.env.EXPO_PUBLIC_AUTH0_DOMAIN;
+const jwtSecret = process.env.APPWRITE_JWT_SECRET;
+const bypass = process.env.EXPO_PUBLIC_DEV_AUTH_BYPASS === "true";
 
-if (!domain) {
-  throw new Error('EXPO_PUBLIC_AUTH0_DOMAIN is required');
-}
-
-const JWKS = createRemoteJWKSet(new URL(`https://${domain}/.well-known/jwks.json`));
+// Pre-encode secret once at module load
+const encodedSecret = jwtSecret ? new TextEncoder().encode(jwtSecret) : null;
 
 interface TokenPayload {
-  sub: string;
-  email: string;
-  email_verified: boolean;
-  name: string;
-  picture: string;
-  iat: number;
-  exp: number;
+	sub: string;
+	email?: string;
+	email_verified?: boolean;
+	name?: string;
+	picture?: string;
+	iat: number;
+	exp: number;
 }
 
 export async function verifyToken(token: string): Promise<TokenPayload> {
-  try {
-    const { payload } = await jwtVerify(token, JWKS, {
-      issuer: `https://${domain}/`,
-      audience: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID,
-    });
+	if (bypass && token === "dev-bypass-access-token") {
+		return {
+			sub: "appwrite-dev-bypass",
+			email: "dev@mockmate.local",
+			email_verified: true,
+			name: "Dev Bypass",
+			picture: "",
+			iat: Math.floor(Date.now() / 1000),
+			exp: Math.floor(Date.now() / 1000) + 3600,
+		};
+	}
 
-    return payload as TokenPayload;
-  } catch (error) {
-    console.error('Token verification failed:', error);
-    throw new Error('Invalid or expired token');
-  }
+	if (!encodedSecret) {
+		throw new Error(
+			"Appwrite JWT secret is not configured. Set APPWRITE_JWT_SECRET in env.",
+		);
+	}
+
+	try {
+		const { payload } = await jwtVerify(token, encodedSecret);
+		return payload as TokenPayload;
+	} catch (error) {
+		console.error("Token verification failed:", error);
+		throw new Error("Invalid or expired token");
+	}
 }
 
-export async function verifyAuth0Token(request: Request): Promise<TokenPayload> {
-  const authHeader = request.headers.get('Authorization');
+export async function verifyAppwriteToken(
+	request: Request,
+): Promise<TokenPayload> {
+	const authHeader = request.headers.get("Authorization");
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new Error('Missing or invalid Authorization header');
-  }
+	if (!authHeader?.startsWith("Bearer ")) {
+		throw new Error("Missing or invalid Authorization header");
+	}
 
-  const token = authHeader.substring(7);
-  return verifyToken(token);
+	const token = authHeader.substring(7);
+	return verifyToken(token);
 }
+
+// Legacy alias for migration compat
+export {
+	verifyAppwriteToken as verifyClerkToken,
+	verifyAppwriteToken as verifyGoogleIdToken,
+};
