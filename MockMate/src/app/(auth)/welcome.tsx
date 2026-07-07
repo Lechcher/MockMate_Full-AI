@@ -27,10 +27,7 @@ export default function WelcomeScreen() {
 			const message = err instanceof Error ? err.message : String(err);
 			console.error("Login error:", err);
 
-			if (
-				message.includes("cancelled") ||
-				message.includes("cancel")
-			) {
+			if (message.includes("cancelled") || message.includes("cancel")) {
 				setError("Login cancelled. Please try again.");
 			} else if (message.includes("network")) {
 				setError("Network error. Please check your connection.");

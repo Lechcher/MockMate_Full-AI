@@ -11,6 +11,7 @@ import {
 	Client,
 	ID,
 	OAuthProvider,
+	Storage,
 } from "react-native-appwrite";
 
 const endpoint = process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT;
@@ -43,6 +44,7 @@ export const client = new Client()
 
 export const avatar = new Avatars(client);
 export const account = new Account(client);
+export const storage = new Storage(client);
 
 if (!endpoint && process.env.EXPO_PUBLIC_DEV_AUTH_BYPASS !== "true") {
 	console.error("Missing EXPO_PUBLIC_APPWRITE_ENDPOINT. Auth will fail.");
@@ -158,29 +160,27 @@ export const uploadAvatarToAppwrite = async (
 		if (!bucketId) throw new Error("EXPO_PUBLIC_APPWRITE_BUCKET_ID is not set");
 
 		const fileName = `avatar_${Date.now()}.jpg`;
-		const file = {
-			uri: fileUri,
-			name: fileName,
-			type: "image/jpeg",
-			size: 0,
-		};
-
-		const uploadedFile = await account.client.call<{ $id: string }>(
-			"post",
-			`/storage/buckets/${bucketId}/files`,
-			{
-				"x-appwrite-id": ID.unique(),
+		const uploadedFile = await storage.createFile({
+			bucketId,
+			fileId: ID.unique(),
+			file: {
+				uri: fileUri,
+				name: fileName,
+				type: "image/jpeg",
+				size: 0,
 			},
-			{ fileId: "unique()", file },
-		);
+		});
 
-		const fileUrl = `${endpoint}/storage/buckets/${bucketId}/files/${uploadedFile.$id}/view?project=${projectId}`;
+		const fileUrl = storage.getFileView({
+			bucketId,
+			fileId: uploadedFile.$id,
+		});
 
 		if (isDevelopment) {
-			console.log("Avatar uploaded successfully:", fileUrl);
+			console.log("Avatar uploaded successfully:", fileUrl.toString());
 		}
 
-		return fileUrl;
+		return fileUrl.toString();
 	} catch (error) {
 		console.error("Avatar upload error:", error);
 		return null;
