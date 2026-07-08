@@ -1,16 +1,16 @@
 /**
  * useTTS hook
- * 
+ *
  * Text-to-Speech hook for converting text to audio using OpenAI TTS API.
  * Generates speech from text and plays it back using Expo AV.
- * 
+ *
  * @example
  * ```tsx
  * import { useTTS } from '@/hooks/useTTS';
- * 
+ *
  * function VoiceInterviewScreen() {
  *   const { generateAndPlay, stop, isGenerating, isPlaying } = useTTS();
- * 
+ *
  *   const handleReadQuestion = async () => {
  *     try {
  *       await generateAndPlay('What is your greatest strength?');
@@ -18,7 +18,7 @@
  *       console.error('TTS failed:', err);
  *     }
  *   };
- * 
+ *
  *   return (
  *     <View>
  *       <Button onPress={handleReadQuestion} disabled={isGenerating}>
@@ -29,7 +29,7 @@
  *   );
  * }
  * ```
- * 
+ *
  * @returns {Object} TTS controls and state
  * @returns {(text: string) => Promise<Audio.Sound>} generateAndPlay - Generate and play speech
  * @returns {() => Promise<void>} stop - Stop and unload audio
@@ -41,104 +41,104 @@
  * @returns {string | null} error - Error message if any
  */
 
-import { useState } from 'react';
-import { Audio } from 'expo-av';
-import { generateAPIUrl } from '../lib/utils';
-import { fetch as expoFetch } from 'expo/fetch';
+import { fetch as expoFetch } from "expo/fetch";
+import { Audio } from "expo-av";
+import { useState } from "react";
+import { generateAPIUrl } from "../lib/utils";
 
 export function useTTS() {
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [error, setError] = useState<string | null>(null);
+	const [isGenerating, setIsGenerating] = useState(false);
+	const [isPlaying, setIsPlaying] = useState(false);
+	const [sound, setSound] = useState<Audio.Sound | null>(null);
+	const [error, setError] = useState<string | null>(null);
 
-  const generateAndPlay = async (text: string) => {
-    try {
-      setIsGenerating(true);
-      setError(null);
+	const generateAndPlay = async (text: string) => {
+		try {
+			setIsGenerating(true);
+			setError(null);
 
-      // Generate speech
-      const response = await expoFetch(generateAPIUrl('/api/tts'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text }),
-      });
+			// Generate speech
+			const response = await expoFetch(generateAPIUrl("/api/tts"), {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ text }),
+			});
 
-      if (!response.ok) {
-        throw new Error('Failed to generate speech');
-      }
+			if (!response.ok) {
+				throw new Error("Failed to generate speech");
+			}
 
-      const data = await response.json();
-      
-      // Convert base64 to audio
-      const audioUri = `data:audio/mp3;base64,${data.audio}`;
-      
-      // Load and play audio
-      const { sound: audioSound } = await Audio.Sound.createAsync(
-        { uri: audioUri },
-        { shouldPlay: true }
-      );
+			const data = await response.json();
 
-      setSound(audioSound);
-      setIsPlaying(true);
+			// Convert base64 to audio
+			const audioUri = `data:audio/mp3;base64,${data.audio}`;
 
-      // Set up playback status update
-      audioSound.setOnPlaybackStatusUpdate((status) => {
-        if (status.isLoaded && status.didJustFinish) {
-          setIsPlaying(false);
-        }
-      });
+			// Load and play audio
+			const { sound: audioSound } = await Audio.Sound.createAsync(
+				{ uri: audioUri },
+				{ shouldPlay: true },
+			);
 
-      return audioSound;
-    } catch (err: any) {
-      console.error('TTS error:', err);
-      setError(err.message || 'Failed to generate speech');
-      throw err;
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+			setSound(audioSound);
+			setIsPlaying(true);
 
-  const stop = async () => {
-    if (sound) {
-      await sound.stopAsync();
-      await sound.unloadAsync();
-      setSound(null);
-      setIsPlaying(false);
-    }
-  };
+			// Set up playback status update
+			audioSound.setOnPlaybackStatusUpdate((status) => {
+				if (status.isLoaded && status.didJustFinish) {
+					setIsPlaying(false);
+				}
+			});
 
-  const pause = async () => {
-    if (sound) {
-      await sound.pauseAsync();
-      setIsPlaying(false);
-    }
-  };
+			return audioSound;
+		} catch (err: any) {
+			console.error("TTS error:", err);
+			setError(err.message || "Failed to generate speech");
+			throw err;
+		} finally {
+			setIsGenerating(false);
+		}
+	};
 
-  const resume = async () => {
-    if (sound) {
-      await sound.playAsync();
-      setIsPlaying(true);
-    }
-  };
+	const stop = async () => {
+		if (sound) {
+			await sound.stopAsync();
+			await sound.unloadAsync();
+			setSound(null);
+			setIsPlaying(false);
+		}
+	};
 
-  // Cleanup on unmount
-  const cleanup = async () => {
-    if (sound) {
-      await sound.unloadAsync();
-    }
-  };
+	const pause = async () => {
+		if (sound) {
+			await sound.pauseAsync();
+			setIsPlaying(false);
+		}
+	};
 
-  return {
-    generateAndPlay,
-    stop,
-    pause,
-    resume,
-    cleanup,
-    isGenerating,
-    isPlaying,
-    error,
-  };
+	const resume = async () => {
+		if (sound) {
+			await sound.playAsync();
+			setIsPlaying(true);
+		}
+	};
+
+	// Cleanup on unmount
+	const cleanup = async () => {
+		if (sound) {
+			await sound.unloadAsync();
+		}
+	};
+
+	return {
+		generateAndPlay,
+		stop,
+		pause,
+		resume,
+		cleanup,
+		isGenerating,
+		isPlaying,
+		error,
+	};
 }

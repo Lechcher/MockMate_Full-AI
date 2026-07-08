@@ -61,13 +61,13 @@
 
 ## 7. Molecular Components (Molecules)
 
-- [ ] 7.1 Create `src/components/molecules/InterviewCard.tsx` with industry icon, difficulty badge, rating, favorite button
-- [ ] 7.2 Create `src/components/molecules/QuestCard.tsx` with quest icon, progress bar, reward display
-- [ ] 7.3 Create `src/components/molecules/StreakBadge.tsx` with fire icon and count
-- [ ] 7.4 Create `src/components/molecules/ShopCard.tsx` for premium and power-up displays
-- [ ] 7.5 Create `src/components/molecules/StatCard.tsx` for profile statistics
-- [ ] 7.6 Create `src/components/molecules/HeaderMetrics.tsx` showing gems, XP, streak in header
-- [ ] 7.7 Create `src/components/molecules/GoogleSignInButton.tsx` — branded button with Google logo
+- [x] 7.1 Create `src/components/molecules/InterviewCard.tsx` with industry icon, difficulty badge, rating, favorite button
+- [x] 7.2 Create `src/components/molecules/QuestCard.tsx` with quest icon, progress bar, reward display
+- [x] 7.3 Create `src/components/molecules/StreakBadge.tsx` with fire icon and count
+- [x] 7.4 Create `src/components/molecules/ShopCard.tsx` for premium and power-up displays
+- [x] 7.5 Create `src/components/molecules/StatCard.tsx` for profile statistics
+- [x] 7.6 Create `src/components/molecules/HeaderMetrics.tsx` showing gems, XP, streak in header
+- [x] 7.7 Create `src/components/molecules/GoogleSignInButton.tsx` — branded button with Google logo
 
 ## 8. Navigation Structure
 
@@ -90,153 +90,153 @@
 
 ## 10. Home Tab Screen
 
-- [ ] 10.1 Create `src/app/(tabs)/index.tsx` home screen layout
-- [ ] 10.2 Add `HeaderMetrics` component showing gems, XP, streak, VIP badge from `useUserProfile`
-- [ ] 10.3 Add featured interviews carousel using `useInterviews` and a horizontal `FlatList`
-- [ ] 10.4 Add daily quest progress card linking to quests tab
-- [ ] 10.5 Add quick action buttons (Start Interview, Browse All)
-- [ ] 10.6 Add learning status indicator ("Start your daily practice" or "Great job today!")
-- [ ] 10.7 Implement streak milestone popup modal on 7/14/30 day achievements
+- [x] 10.1 Create `src/app/(tabs)/index.tsx` home screen layout
+- [x] 10.2 Add `HeaderMetrics` component showing gems, XP, streak, VIP badge from `useUserProfile`
+- [x] 10.3 Add featured interviews carousel using `useInterviews` and a horizontal `FlatList`
+- [x] 10.4 Add daily quest progress card linking to quests tab
+- [x] 10.5 Add quick action buttons (Start Interview, Browse All)
+- [x] 10.6 Add learning status indicator ("Start your daily practice" or "Great job today!")
+- [x] 10.7 Implement streak milestone popup modal on 7/14/30 day achievements
 
 ## 11. Explore Tab Screen
 
-- [ ] 11.1 Create `src/app/(tabs)/explore.tsx` explore screen layout
-- [ ] 11.2 Add search input with real-time filtering on the local `useInterviews` cache
-- [ ] 11.3 Add horizontal industry filter chips with selection state
-- [ ] 11.4 Add difficulty filter chips below industry filters
-- [ ] 11.5 Implement interview grid using FlatList with 2 columns
-- [ ] 11.6 Implement combined filter logic (industry AND difficulty AND search)
-- [ ] 11.7 Add favorite toggle via mutation to `/api/saved-interviews`
-- [ ] 11.8 Implement navigation to interview detail on card tap
+- [x] 11.1 Create `src/app/(tabs)/explore.tsx` explore screen layout
+- [x] 11.2 Add search input with real-time filtering on the local `useInterviews` cache
+- [x] 11.3 Add horizontal industry filter chips with selection state
+- [x] 11.4 Add difficulty filter chips below industry filters
+- [x] 11.5 Implement interview grid using FlatList with 2 columns
+- [x] 11.6 Implement combined filter logic (industry AND difficulty AND search)
+- [x] 11.7 Add favorite toggle via mutation to `/api/saved-interviews`
+- [x] 11.8 Implement navigation to interview detail on card tap
 
 ## 12. Daily Quests Tab Screen
 
-- [ ] 12.1 Create `src/app/(tabs)/quests.tsx` daily quests screen layout
-- [ ] 12.2 Display list of quest cards using FlatList
-- [ ] 12.3 Implement real-time progress updates via `useGamificationState` (server) and `gamificationStore` (transient)
-- [ ] 12.4 Add quest completion celebration animation and gem award (POST to `/api/gamification/award`)
-- [ ] 12.5 Add countdown timer showing time until daily reset
-- [ ] 12.6 Display "Total Earned" lifetime gem stat
-- [ ] 12.7 Implement daily quest reset logic (midnight local time) — generate a new quest set client-side from a seedable list
+- [x] 12.1 Create `src/app/(tabs)/quests.tsx` daily quests screen layout
+- [x] 12.2 Display list of quest cards using FlatList
+- [x] 12.3 Implement real-time progress updates via `useGamificationState` (server) and `gamificationStore` (transient)
+- [x] 12.4 Add quest completion celebration animation and gem award (POST to `/api/gamification/award`)
+- [x] 12.5 Add countdown timer showing time until daily reset
+- [x] 12.6 Display "Total Earned" lifetime gem stat
+- [x] 12.7 Implement daily quest reset logic (midnight local time) — generate a new quest set client-side from a seedable list
 
 ## 13. Shop Tab Screen
 
-- [ ] 13.1 Create `src/app/(tabs)/shop.tsx` shop screen layout
-- [ ] 13.2 Add "Go Premium" card at top for non-VIP users (hide for VIP) using `useVIPStatus`
-- [ ] 13.3 Add "Daily Deal" special offer card
-- [ ] 13.4 Display Power-Ups section with Streak Freeze and Double XP cards
-- [ ] 13.5 Implement gem purchase confirmation modal
-- [ ] 13.6 Add power-up purchase logic: POST to `/api/gamification/award` (negative delta) and update local store
-- [ ] 13.7 Display gem balance in header, update after purchases via React Query invalidation
-- [ ] 13.8 Implement "insufficient gems" error with link to quests tab
-- [ ] 13.9 Prevent duplicate Double XP purchase when already active
+- [x] 13.1 Create `src/app/(tabs)/shop.tsx` shop screen layout
+- [x] 13.2 Add "Go Premium" card at top for non-VIP users (hide for VIP) using `useVIPStatus`
+- [x] 13.3 Add "Daily Deal" special offer card
+- [x] 13.4 Display Power-Ups section with Streak Freeze and Double XP cards
+- [x] 13.5 Implement gem purchase confirmation modal
+- [x] 13.6 Add power-up purchase logic: POST to `/api/gamification/award` (negative delta) and update local store
+- [x] 13.7 Display gem balance in header, update after purchases via React Query invalidation
+- [x] 13.8 Implement "insufficient gems" error with link to quests tab
+- [x] 13.9 Prevent duplicate Double XP purchase when already active
 
 ## 14. Profile Tab Screen
 
-- [ ] 14.1 Create `src/app/(tabs)/profile.tsx` profile screen layout
-- [ ] 14.2 Add user profile header with avatar (from `useUserProfile`), name, email, VIP badge
-- [ ] 14.3 Display user stats (XP, level, gems, streak) from `useUserProfile`
-- [ ] 14.4 Add Career section menu (Interview History, Saved Interviews)
-- [ ] 14.5 Add App Settings section menu (General Settings, Security, Language)
-- [ ] 14.6 Add Support section menu (Help Center, Log Out)
-- [ ] 14.7 Implement logout confirmation modal — calls `useAuth().logout()` which clears Auth0 session and React Query cache
-- [ ] 14.8 Add "Upgrade to VIP" banner for non-VIP users
+- [x] 14.1 Create `src/app/(tabs)/profile.tsx` profile screen layout
+- [x] 14.2 Add user profile header with avatar (from `useUserProfile`), name, email, VIP badge
+- [x] 14.3 Display user stats (XP, level, gems, streak) from `useUserProfile`
+- [x] 14.4 Add Career section menu (Interview History, Saved Interviews)
+- [x] 14.5 Add App Settings section menu (General Settings, Security, Language)
+- [x] 14.6 Add Support section menu (Help Center, Log Out)
+- [x] 14.7 Implement logout confirmation modal — calls `useAuth().logout()` which clears Auth0 session and React Query cache
+- [x] 14.8 Add "Upgrade to VIP" banner for non-VIP users
 
 ## 15. Interview Detail Screen
 
-- [ ] 15.1 Create `src/app/interview/[id].tsx` detail screen using `useInterviews` to find the interview
-- [ ] 15.2 Display interview header with title, industry, difficulty, rating
-- [ ] 15.3 Show focus area, question count, duration estimate
-- [ ] 15.4 Add favorite toggle button — calls `useSavedInterviews` mutation
-- [ ] 15.5 Display interview description and review breakdown
-- [ ] 15.6 Add "VIP Only" indicator for premium interviews when `useVIPStatus().isVIP === false`
-- [ ] 15.7 Add "Start Interview" button navigating to mode selection
-- [ ] 15.8 Replace button with "Upgrade to Start" for premium interviews (non-VIP)
+- [x] 15.1 Create `src/app/interview/[id].tsx` detail screen using `useInterviews` to find the interview
+- [x] 15.2 Display interview header with title, industry, difficulty, rating
+- [x] 15.3 Show focus area, question count, duration estimate
+- [x] 15.4 Add favorite toggle button — calls `useSavedInterviews` mutation
+- [x] 15.5 Display interview description and review breakdown
+- [x] 15.6 Add "VIP Only" indicator for premium interviews when `useVIPStatus().isVIP === false`
+- [x] 15.7 Add "Start Interview" button navigating to mode selection
+- [x] 15.8 Replace button with "Upgrade to Start" for premium interviews (non-VIP)
 
 ## 16. Interview Mode Selection Screen
 
-- [ ] 16.1 Create `src/app/interview/mode.tsx` mode selection screen
-- [ ] 16.2 Display two mode cards: Text Mode and Voice Mode
-- [ ] 16.3 Add descriptions and icons to each mode card
-- [ ] 16.4 Implement navigation to text interview on Text Mode tap
-- [ ] 16.5 Request microphone permission via `expo-av` and navigate to voice interview on Voice Mode tap
-- [ ] 16.6 Handle microphone permission denial with error message
+- [x] 16.1 Create `src/app/interview/mode.tsx` mode selection screen
+- [x] 16.2 Display two mode cards: Text Mode and Voice Mode
+- [x] 16.3 Add descriptions and icons to each mode card
+- [x] 16.4 Implement navigation to text interview on Text Mode tap
+- [x] 16.5 Request microphone permission via `expo-av` and navigate to voice interview on Voice Mode tap
+- [x] 16.6 Handle microphone permission denial with error message
 
 ## 17. Text Mode Interview Screen
 
-- [ ] 17.1 Create `src/app/interview/text.tsx` text interview screen
-- [ ] 17.2 Display question progress indicator (Question X of Y)
-- [ ] 17.3 Display current question text prominently
-- [ ] 17.4 Add multi-line text input with character count
-- [ ] 17.5 Add "Next Question" button with answer submission logic (store in Zustand)
-- [ ] 17.6 Implement skip confirmation modal for empty answers
-- [ ] 17.7 Add elapsed time timer in header
-- [ ] 17.8 On finish, POST to `/api/interview-history` and navigate to results
-- [ ] 17.9 Implement save and exit confirmation modal
+- [x] 17.1 Create `src/app/interview/text.tsx` text interview screen
+- [x] 17.2 Display question progress indicator (Question X of Y)
+- [x] 17.3 Display current question text prominently
+- [x] 17.4 Add multi-line text input with character count
+- [x] 17.5 Add "Next Question" button with answer submission logic (store in Zustand)
+- [x] 17.6 Implement skip confirmation modal for empty answers
+- [x] 17.7 Add elapsed time timer in header
+- [x] 17.8 On finish, POST to `/api/interview-history` and navigate to results
+- [x] 17.9 Implement save and exit confirmation modal
 
 ## 18. Voice Mode Interview Screen
 
-- [ ] 18.1 Create `src/app/interview/voice.tsx` voice interview screen
-- [ ] 18.2 Display question progress indicator
-- [ ] 18.3 Implement text-to-speech for question reading (`expo-speech`)
-- [ ] 18.4 Add "Replay" button to repeat question
-- [ ] 18.5 Implement microphone recording with waveform animation (`expo-av`)
-- [ ] 18.6 Add stop recording button and playback controls
-- [ ] 18.7 Add re-record functionality
-- [ ] 18.8 Implement 3-minute recording time limit
-- [ ] 18.9 Add elapsed time timer in header
-- [ ] 18.10 On finish, upload audio to Sanity assets, POST to `/api/interview-history`, navigate to results
+- [x] 18.1 Create `src/app/interview/voice.tsx` voice interview screen
+- [x] 18.2 Display question progress indicator
+- [x] 18.3 Implement text-to-speech for question reading (`expo-speech`)
+- [x] 18.4 Add "Replay" button to repeat question
+- [x] 18.5 Implement microphone recording with waveform animation (`expo-av`)
+- [x] 18.6 Add stop recording button and playback controls
+- [x] 18.7 Add re-record functionality
+- [x] 18.8 Implement 3-minute recording time limit
+- [x] 18.9 Add elapsed time timer in header
+- [x] 18.10 On finish, upload audio to Sanity assets, POST to `/api/interview-history`, navigate to results
 
 ## 19. Interview Results Screen
 
-- [ ] 19.1 Create `src/app/interview/result.tsx` results screen
-- [ ] 19.2 Display overall performance score with circular progress indicator
-- [ ] 19.3 Add color-coded score styling (green 80-100%, yellow 60-79%, red 0-59%)
-- [ ] 19.4 Show performance metrics breakdown (Communication, Technical Knowledge, Problem Solving, Confidence)
-- [ ] 19.5 Display question-by-question feedback list with expand/collapse
-- [ ] 19.6 Calculate and display XP and gems earned with animation
-- [ ] 19.7 POST to `/api/gamification/award` to persist rewards
-- [ ] 19.8 Increment streak if first interview of the day (server-side in the award endpoint)
-- [ ] 19.9 Display improvement areas section
-- [ ] 19.10 Add action buttons (Save Interview, Share Results, Try Again)
-- [ ] 19.11 Implement "Back to Home" navigation clearing stack
+- [x] 19.1 Create `src/app/interview/result.tsx` results screen
+- [x] 19.2 Display overall performance score with circular progress indicator
+- [x] 19.3 Add color-coded score styling (green 80-100%, yellow 60-79%, red 0-59%)
+- [x] 19.4 Show performance metrics breakdown (Communication, Technical Knowledge, Problem Solving, Confidence)
+- [x] 19.5 Display question-by-question feedback list with expand/collapse
+- [x] 19.6 Calculate and display XP and gems earned with animation
+- [x] 19.7 POST to `/api/gamification/award` to persist rewards
+- [x] 19.8 Increment streak if first interview of the day (server-side in the award endpoint)
+- [x] 19.9 Display improvement areas section
+- [x] 19.10 Add action buttons (Save Interview, Share Results, Try Again)
+- [x] 19.11 Implement "Back to Home" navigation clearing stack
 
 ## 20. Interview History Screen
 
-- [ ] 20.1 Create `src/app/history.tsx` interview history screen
-- [ ] 20.2 Display list from `useInterviewHistory` (paged if needed)
-- [ ] 20.3 Show interview title, completion date, score, duration per entry
-- [ ] 20.4 Navigate to history detail screen on tap
-- [ ] 20.5 Display "No interviews completed yet" empty state
+- [x] 20.1 Create `src/app/history.tsx` interview history screen
+- [x] 20.2 Display list from `useInterviewHistory` (paged if needed)
+- [x] 20.3 Show interview title, completion date, score, duration per entry
+- [x] 20.4 Navigate to history detail screen on tap
+- [x] 20.5 Display "No interviews completed yet" empty state
 
 ## 21. Saved Interviews Screen
 
-- [ ] 21.1 Create saved interviews screen at `src/app/saved.tsx`
-- [ ] 21.2 Display grid of favorited interviews from `useSavedInterviews`
-- [ ] 21.3 Add unfavorite functionality on heart icon tap (DELETE via mutation)
-- [ ] 21.4 Display "No saved interviews" empty state with "Browse Interviews" button
+- [x] 21.1 Create saved interviews screen at `src/app/saved.tsx`
+- [x] 21.2 Display grid of favorited interviews from `useSavedInterviews`
+- [x] 21.3 Add unfavorite functionality on heart icon tap (DELETE via mutation)
+- [x] 21.4 Display "No saved interviews" empty state with "Browse Interviews" button
 
 ## 22. VIP Subscription Screen
 
-- [ ] 22.1 Create `src/app/vip.tsx` VIP subscription screen
-- [ ] 22.2 Display yearly and monthly plan cards with pricing
-- [ ] 22.3 Show "Best Value" badge on yearly plan with 50% discount
-- [ ] 22.4 List VIP benefits with checkmark icons
-- [ ] 22.5 Integrate `Purchases.getOfferings()` to fetch subscription products
-- [ ] 22.6 Implement plan selection highlighting
-- [ ] 22.7 Add "Subscribe" button triggering `Purchases.purchasePackage()`
-- [ ] 22.8 Handle purchase success, cancellation, and error states
-- [ ] 22.9 Display "Try Free for 7 Days" badge for new users
-- [ ] 22.10 Add "Restore Purchases" button calling `Purchases.restorePurchases()`
-- [ ] 22.11 Show trial terms disclaimer text
+- [x] 22.1 Create `src/app/vip.tsx` VIP subscription screen
+- [x] 22.2 Display yearly and monthly plan cards with pricing
+- [x] 22.3 Show "Best Value" badge on yearly plan with 50% discount
+- [x] 22.4 List VIP benefits with checkmark icons
+- [x] 22.5 Integrate `Purchases.getOfferings()` to fetch subscription products
+- [x] 22.6 Implement plan selection highlighting
+- [x] 22.7 Add "Subscribe" button triggering `Purchases.purchasePackage()`
+- [x] 22.8 Handle purchase success, cancellation, and error states
+- [x] 22.9 Display "Try Free for 7 Days" badge for new users
+- [x] 22.10 Add "Restore Purchases" button calling `Purchases.restorePurchases()`
+- [x] 22.11 Show trial terms disclaimer text
 
 ## 23. VIP Status Screen
 
-- [ ] 23.1 Create `src/app/vip-status.tsx` VIP status screen
-- [ ] 23.2 Display current plan type (Yearly/Monthly) from `useVIPStatus`
-- [ ] 23.3 Show renewal or expiration date
-- [ ] 23.4 Add "Manage Subscription" button opening App Store/Google Play via `Linking`
-- [ ] 23.5 Accessible only from profile crown badge tap
+- [x] 23.1 Create `src/app/vip-status.tsx` VIP status screen
+- [x] 23.2 Display current plan type (Yearly/Monthly) from `useVIPStatus`
+- [x] 23.3 Show renewal or expiration date
+- [x] 23.4 Add "Manage Subscription" button opening App Store/Google Play via `Linking`
+- [x] 23.5 Accessible only from profile crown badge tap
 
 ## 24. Testing and Verification
 
@@ -269,11 +269,16 @@
 
 ## 26. Required .env.example Variables (Reference)
 
-- [ ] 26.1 `EXPO_PUBLIC_AUTH0_DOMAIN=your-tenant.us.auth0.com`
-- [ ] 26.2 `EXPO_PUBLIC_AUTH0_CLIENT_ID=your_native_app_client_id`
-- [ ] 26.3 `EXPO_PUBLIC_SANITY_PROJECT_ID=your_sanity_project_id`
-- [ ] 26.4 `EXPO_PUBLIC_SANITY_DATASET=production`
-- [ ] 26.5 `EXPO_PUBLIC_SANITY_API_VERSION=2024-01-01`
-- [ ] 26.6 `SANITY_API_TOKEN=server_only_write_token` (no `EXPO_PUBLIC_` prefix)
-- [ ] 26.7 `EXPO_PUBLIC_REVENUECAT_IOS_KEY=appl_xxxxxxxx`
-- [ ] 26.8 `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY=goog_xxxxxxxx`
+The `MockMate/.env.example` already contains every variable below plus the
+current Appwrite/RevenueCat/OpenAI pieces. Auth0 was replaced by Appwrite
+in commit `054de39`, so 26.1 + 26.2 are obsolete; the Appwrite equivalents
+(AUTH_SETUP.md) cover the same role.
+
+- [x] 26.1 `EXPO_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1` (replaces Auth0 domain)
+- [x] 26.2 `EXPO_PUBLIC_APPWRITE_PROJECT_ID=...` (replaces Auth0 client id)
+- [x] 26.3 `EXPO_PUBLIC_SANITY_PROJECT_ID=your_sanity_project_id`
+- [x] 26.4 `EXPO_PUBLIC_SANITY_DATASET=production`
+- [x] 26.5 `EXPO_PUBLIC_SANITY_API_VERSION=2024-01-01`
+- [x] 26.6 `SANITY_API_TOKEN=server_only_write_token` (no `EXPO_PUBLIC_` prefix)
+- [x] 26.7 `EXPO_PUBLIC_REVENUECAT_IOS_KEY=appl_xxxxxxxx`
+- [x] 26.8 `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY=goog_xxxxxxxx`

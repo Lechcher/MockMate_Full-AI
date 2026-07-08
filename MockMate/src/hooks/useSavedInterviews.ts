@@ -1,134 +1,154 @@
 /**
  * useSavedInterviews hook
- * 
+ *
  * Fetches user's saved/favorite interviews from API.
- * Returns list of saved interview references with timestamps.
- * 
- * @example
- * ```tsx
- * import { useSavedInterviews } from '@/hooks/useSavedInterviews';
- * 
- * function SavedScreen() {
- *   const { data: saved, isLoading } = useSavedInterviews();
- * 
- *   if (isLoading) return <Text>Loading...</Text>;
- *   if (!saved?.length) return <Text>No saved interviews</Text>;
- * 
- *   return (
- *     <FlatList
- *       data={saved}
- *       renderItem={({ item }) => <InterviewCard interviewId={item.interviewId} />}
- *     />
- *   );
- * }
- * ```
- * 
- * @returns {UseQueryResult<SavedInterview[]>} React Query result with saved interviews
+ * Returns the cached list plus `isFavorite(id)` and `toggleFavorite(id)`
+ * convenience helpers so screens don't need a second mutation hook.
+ *
+ * Toggling uses an optimistic cache update, then POSTs/DELETEs and
+ * invalidates the saved-interviews query on settle.
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuth } from './useAuth';
-import { Interview } from '../types/interview';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "./useAuth";
 
 interface SavedInterview {
-  _id: string;
-  userId: string;
-  interviewId: string;
-  savedAt: string;
+	_id: string;
+	userId: string;
+	interviewId: string;
+	savedAt: string;
 }
 
 export function useSavedInterviews() {
-  const { getAccessToken, user } = useAuth();
+	const { getAccessToken, user } = useAuth();
+	const queryClient = useQueryClient();
 
-  return useQuery({
-    queryKey: ['savedInterviews', user?.sub],
-    queryFn: async () => {
-      const token = await getAccessToken();
-      const response = await fetch('/api/saved-interviews', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+	const query = useQuery({
+		queryKey: ["savedInterviews", user?.sub],
+		queryFn: async () => {
+			const token = await getAccessToken();
+			const response = await fetch("/api/saved-interviews", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch saved interviews');
-      }
+			if (!response.ok) {
+				throw new Error("Failed to fetch saved interviews");
+			}
 
-      return response.json() as Promise<SavedInterview[]>;
-    },
-    enabled: !!user,
-  });
+			return response.json() as Promise<SavedInterview[]>;
+		},
+		enabled: !!user,
+	});
+
+	/** True if the given interview ID is in the user's saved list. */
+	const isFavorite = (interviewId: string) =>
+		!!query.data?.some((s) => s.interviewId === interviewId);
+
+	/** Toggle a saved favorite. Optimistic with rollback on error. */
+	const toggleFavorite = (interviewId: string) => {
+		const wasSaved = isFavorite(interviewId);
+		void queryClient.cancelQueries({ queryKey: ["savedInterviews"] });
+
+		queryClient.setQueryData<SavedInterview[]>(
+			["savedInterviews", user?.sub],
+			(old) => {
+				if (!old) return old;
+				return wasSaved
+					? old.filter((s) => s.interviewId !== interviewId)
+					: [
+							...old,
+							{
+								_id: `local-${interviewId}`,
+								userId: user?.sub || "",
+								interviewId,
+								savedAt: new Date().toISOString(),
+							},
+						];
+			},
+		);
+
+		void (async () => {
+			try {
+				const token = await getAccessToken();
+				const res = wasSaved
+					? await fetch(`/api/saved-interviews?interviewId=${interviewId}`, {
+							method: "DELETE",
+							headers: { Authorization: `Bearer ${token}` },
+						})
+					: await fetch("/api/saved-interviews", {
+							method: "POST",
+							headers: {
+								Authorization: `Bearer ${token}`,
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ interviewId }),
+						});
+				if (!res.ok) throw new Error("Toggle request failed");
+				queryClient.invalidateQueries({ queryKey: ["savedInterviews"] });
+			} catch {
+				// Roll back optimistic update
+				queryClient.invalidateQueries({ queryKey: ["savedInterviews"] });
+			}
+		})();
+	};
+
+	return { ...query, toggleFavorite, isFavorite };
 }
 
 /**
- * useToggleSavedInterview hook
- * 
- * Mutation hook for adding/removing interviews from favorites.
- * Automatically invalidates saved interviews cache on success.
- * 
- * @example
- * ```tsx
- * import { useToggleSavedInterview } from '@/hooks/useSavedInterviews';
- * 
- * function InterviewCard({ interview, isSaved }: Props) {
- *   const { mutate: toggleSaved } = useToggleSavedInterview();
- * 
- *   const handleToggle = () => {
- *     toggleSaved({ interviewId: interview._id, isSaved });
- *   };
- * 
- *   return (
- *     <Button onPress={handleToggle}>
- *       {isSaved ? 'Remove from Saved' : 'Save Interview'}
- *     </Button>
- *   );
- * }
- * ```
- * 
- * @returns {UseMutationResult} React Query mutation result
+ * useToggleSavedInterview - standalone mutation hook
+ * Keeps the old API for callers that prefer explicit mutations.
  */
 export function useToggleSavedInterview() {
-  const { getAccessToken } = useAuth();
-  const queryClient = useQueryClient();
+	const { getAccessToken } = useAuth();
+	const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async ({ interviewId, isSaved }: { interviewId: string; isSaved: boolean }) => {
-      const token = await getAccessToken();
+	return useMutation({
+		mutationFn: async ({
+			interviewId,
+			isSaved,
+		}: {
+			interviewId: string;
+			isSaved: boolean;
+		}) => {
+			const token = await getAccessToken();
 
-      if (isSaved) {
-        // Remove from saved
-        const response = await fetch(`/api/saved-interviews?interviewId=${interviewId}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+			if (isSaved) {
+				const response = await fetch(
+					`/api/saved-interviews?interviewId=${interviewId}`,
+					{
+						method: "DELETE",
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					},
+				);
 
-        if (!response.ok) {
-          throw new Error('Failed to remove saved interview');
-        }
+				if (!response.ok) {
+					throw new Error("Failed to remove saved interview");
+				}
 
-        return response.json();
-      } else {
-        // Add to saved
-        const response = await fetch('/api/saved-interviews', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ interviewId }),
-        });
+				return response.json();
+			}
+			const response = await fetch("/api/saved-interviews", {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ interviewId }),
+			});
 
-        if (!response.ok) {
-          throw new Error('Failed to save interview');
-        }
+			if (!response.ok) {
+				throw new Error("Failed to save interview");
+			}
 
-        return response.json();
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['savedInterviews'] });
-    },
-  });
+			return response.json();
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["savedInterviews"] });
+		},
+	});
 }

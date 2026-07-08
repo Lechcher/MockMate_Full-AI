@@ -1,0 +1,180 @@
+reporter/format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i The following files need to be formatted:
+  
+  - .vscode/settings.json
+  - app.json
+  - assets/expo.icon/icon.json
+  - assets/images/Logo/site.webmanifest
+  - global.css
+  - metro.config.js
+  - package.json
+  - polyfills.ts
+  - src/app/(auth)/_layout.tsx
+  - src/app/(auth)/welcome.tsx
+  - src/app/(tabs)/_layout.tsx
+  - src/app/(tabs)/explore.tsx
+  - src/app/(tabs)/index.tsx
+  - src/app/(tabs)/profile.tsx
+  - src/app/(tabs)/quests.tsx
+  - src/app/(tabs)/shop.tsx
+  - src/app/_layout.tsx
+  - src/app/api/chat+api.ts
+  - src/app/api/gamification/award+api.ts
+  - src/app/api/gamification/state+api.ts
+  - src/app/api/interview-history+api.ts
+  - src/app/api/saved-interviews+api.ts
+  - src/app/api/stt+api.ts
+  - src/app/api/tts+api.ts
+  - src/app/api/user-profile+api.ts
+  - src/app/history.tsx
+  - src/app/interview/[id].tsx
+  - src/app/interview/mode.tsx
+  - src/app/interview/results.tsx
+  - src/app/interview/text.tsx
+  - src/app/interview/voice.tsx
+  - src/app/saved.tsx
+  - src/app/vip.tsx
+  - src/components/atoms/Badge.tsx
+  - src/components/atoms/Button.tsx
+  - src/components/atoms/Card.tsx
+  - src/components/atoms/Icon.tsx
+  - src/components/atoms/ProgressBar.tsx
+  - src/components/atoms/Skeleton.tsx
+  - src/components/atoms/Text.tsx
+  - src/components/molecules/GoogleSignInButton.tsx
+  - src/components/molecules/HeaderMetrics.tsx
+  - src/components/molecules/InterviewCard.tsx
+  - src/components/molecules/QuestCard.tsx
+  - src/components/molecules/ShopCard.tsx
+  - src/components/molecules/StatCard.tsx
+  - src/components/molecules/StreakBadge.tsx
+  - src/hooks/useAuth.ts
+  - src/hooks/useAuthSync.ts
+  - src/hooks/useGamificationState.ts
+  - src/hooks/useInterviewHistory.ts
+  - src/hooks/useInterviews.ts
+  - src/hooks/useSTT.ts
+  - src/hooks/useSavedInterviews.ts
+  - src/hooks/useTTS.ts
+  - src/hooks/useUserProfile.ts
+  - src/hooks/useVIPStatus.ts
+  - src/lib/auth/Auth0Provider.tsx
+  - src/lib/auth/RequireAuth.tsx
+  - src/lib/auth/verifyToken.ts
+  - src/lib/query/QueryProvider.tsx
+  - src/lib/revenuecat/VIPContext.tsx
+  - src/lib/sanity/client.ts
+  - src/lib/sanity/schemas/interviewCompletion.ts
+  - src/lib/sanity/schemas/interviewHistory.ts
+  - src/lib/sanity/schemas/savedInterview.ts
+  - src/lib/sanity/schemas/userProfile.ts
+  - src/lib/utils.ts
+  - src/schemas/interview.ts
+  - src/schemas/quest.ts
+  - src/schemas/shop.ts
+  - src/schemas/user.ts
+  - src/stores/gamificationStore.ts
+  - src/stores/interviewStore.ts
+  - src/types/interview.ts
+  - src/types/quest.ts
+  - src/types/shop.ts
+  - src/types/user.ts
+  - tsconfig.json
+  - uniwind-types.d.ts
+  
+reporter/violations ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Some lint rules or assist actions reported some violations.
+  
+  i The following files have violations:
+  
+  - assets/expo.icon/Assets/expo-symbol 2.svg (1 error)
+  - assets/icons/Fire.svg (1 error)
+  - polyfills.ts (1 error, 1 info)
+  - src/app/(auth)/welcome.tsx (1 error, 4 warnings)
+  - src/app/(tabs)/explore.tsx (1 error, 3 warnings)
+  - src/app/(tabs)/index.tsx (1 error)
+  - src/app/(tabs)/profile.tsx (1 error, 1 warning)
+  - src/app/(tabs)/quests.tsx (1 error, 1 warning)
+  - src/app/(tabs)/shop.tsx (1 error, 1 warning)
+  - src/app/_layout.tsx (1 error)
+  - src/app/api/chat+api.ts (1 error, 1 warning)
+  - src/app/api/gamification/award+api.ts (1 error, 1 warning)
+  - src/app/api/gamification/state+api.ts (1 error)
+  - src/app/api/interview-history+api.ts (1 error)
+  - src/app/api/saved-interviews+api.ts (1 error)
+  - src/app/api/stt+api.ts (1 error)
+  - src/app/api/tts+api.ts (1 error)
+  - src/app/api/user-profile+api.ts (1 error)
+  - src/app/history.tsx (1 error, 1 warning)
+  - src/app/interview/[id].tsx (1 error, 1 warning)
+  - src/app/interview/mode.tsx (2 errors, 1 warning)
+  - src/app/interview/results.tsx (7 errors)
+  - src/app/interview/text.tsx (1 error)
+  - src/app/interview/voice.tsx (3 errors, 2 warnings)
+  - src/app/saved.tsx (1 error)
+  - src/app/vip.tsx (3 errors, 3 warnings, 2 infos)
+  - src/components/atoms/Badge.tsx (1 error, 1 warning)
+  - src/components/atoms/Button.tsx (1 error, 1 warning)
+  - src/components/atoms/Card.tsx (2 warnings)
+  - src/components/atoms/Icon.tsx (1 error, 2 warnings)
+  - src/components/atoms/ProgressBar.tsx (1 warning)
+  - src/components/atoms/Skeleton.tsx (2 errors, 1 warning)
+  - src/components/atoms/Text.tsx (2 warnings)
+  - src/components/molecules/GoogleSignInButton.tsx (1 warning)
+  - src/components/molecules/HeaderMetrics.tsx (1 error, 1 warning)
+  - src/components/molecules/InterviewCard.tsx (1 error, 1 warning)
+  - src/components/molecules/QuestCard.tsx (1 error, 1 warning)
+  - src/components/molecules/ShopCard.tsx (1 error, 1 warning)
+  - src/components/molecules/StatCard.tsx (1 error, 1 warning)
+  - src/components/molecules/StreakBadge.tsx (1 warning)
+  - src/hooks/useAuth.ts (1 warning)
+  - src/hooks/useAuthSync.ts (2 errors)
+  - src/hooks/useGamificationState.ts (1 error, 1 warning)
+  - src/hooks/useInterviewHistory.ts (1 error, 3 warnings)
+  - src/hooks/useInterviews.ts (1 error, 1 warning)
+  - src/hooks/useSTT.ts (1 error, 3 warnings, 1 info)
+  - src/hooks/useSavedInterviews.ts (1 error, 1 warning)
+  - src/hooks/useTTS.ts (1 error, 1 warning)
+  - src/hooks/useUserProfile.ts (1 error, 1 warning)
+  - src/lib/auth/Auth0Provider.tsx (2 warnings)
+  - src/lib/auth/RequireAuth.tsx (2 errors, 2 warnings)
+  - src/lib/auth/verifyToken.ts (1 error, 1 warning)
+  - src/lib/query/QueryProvider.tsx (1 error, 2 warnings)
+  - src/lib/revenuecat/VIPContext.tsx (2 errors, 3 warnings, 2 infos)
+  - src/lib/sanity/schemas/interviewCompletion.ts (6 warnings)
+  - src/lib/sanity/schemas/interviewHistory.ts (13 warnings)
+  - src/lib/sanity/schemas/savedInterview.ts (2 warnings)
+  - src/lib/sanity/schemas/userProfile.ts (9 warnings)
+  - src/stores/gamificationStore.ts (1 error, 1 warning)
+  - src/stores/interviewStore.ts (1 error, 1 warning)
+  
+  i The following lint rules have violations:
+  
+  Rule Name                                                Diagnostics
+  
+  lint/correctness/useExhaustiveDependencies               9 (9 errors)
+  lint/complexity/noUselessEmptyExport                     1 (1 info)
+  lint/correctness/useHookAtTopLevel                       1 (1 error)
+  lint/correctness/noUnusedVariables                       3 (3 warnings)
+  lint/correctness/noUnusedImports                         25 (25 warnings)
+  lint/complexity/useOptionalChain                         1 (1 warning)
+  lint/suspicious/noArrayIndexKey                          5 (5 errors)
+  lint/complexity/useLiteralKeys                           4 (4 infos)
+  lint/complexity/noUselessCatch                           1 (1 info)
+  lint/suspicious/noExplicitAny                            40 (40 warnings)
+  assist/source/organizeImports                            47 (47 errors)
+  lint/a11y/noSvgWithoutTitle                              2 (2 errors)
+  lint/style/useImportType                                 21 (21 warnings)
+  lint/style/useConst                                      1 (1 warning)
+
+Checked 84 files in 56ms. No fixes applied.
+Found 144 errors.
+Found 91 warnings.
+Found 6 infos.
+check ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Some errors were emitted while running checks.
+  
+

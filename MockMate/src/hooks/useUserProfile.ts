@@ -1,19 +1,19 @@
 /**
  * useUserProfile hook
- * 
+ *
  * Fetches and manages user profile data from Sanity via JWT-guarded API routes.
  * Automatically syncs with Auth0 user identity and provides real-time updates.
- * 
+ *
  * @example
  * ```tsx
  * import { useUserProfile } from '@/hooks/useUserProfile';
- * 
+ *
  * function ProfileScreen() {
  *   const { data: profile, isLoading, error } = useUserProfile();
- * 
+ *
  *   if (isLoading) return <Text>Loading profile...</Text>;
  *   if (error) return <Text>Error: {error.message}</Text>;
- * 
+ *
  *   return (
  *     <View>
  *       <Text>XP: {profile.xp}</Text>
@@ -23,52 +23,52 @@
  *   );
  * }
  * ```
- * 
+ *
  * @returns {UseQueryResult<UserProfile>} React Query result with user profile data
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { UserProfile } from '../types/user';
-import { UserProfileSchema } from '../schemas/user';
-import { useAuth } from './useAuth';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { UserProfileSchema } from "../schemas/user";
+import type { UserProfile } from "../types/user";
+import { useAuth } from "./useAuth";
 
 export function useUserProfile() {
-  const { getAccessToken, user } = useAuth();
+	const { getAccessToken, user } = useAuth();
 
-  return useQuery({
-    queryKey: ['userProfile', user?.sub],
-    queryFn: async () => {
-      const token = await getAccessToken();
-      const response = await fetch('/api/user-profile', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+	return useQuery({
+		queryKey: ["userProfile", user?.sub],
+		queryFn: async () => {
+			const token = await getAccessToken();
+			const response = await fetch("/api/user-profile", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch user profile');
-      }
+			if (!response.ok) {
+				throw new Error("Failed to fetch user profile");
+			}
 
-      const data = await response.json();
-      return UserProfileSchema.parse(data) as UserProfile;
-    },
-    enabled: !!user,
-  });
+			const data = await response.json();
+			return UserProfileSchema.parse(data) as UserProfile;
+		},
+		enabled: !!user,
+	});
 }
 
 /**
  * useUpdateUserProfile hook
- * 
+ *
  * Mutation hook for updating user profile data in Sanity.
  * Automatically invalidates cached profile data on success.
- * 
+ *
  * @example
  * ```tsx
  * import { useUpdateUserProfile } from '@/hooks/useUserProfile';
- * 
+ *
  * function SettingsScreen() {
  *   const { mutate: updateProfile, isPending } = useUpdateUserProfile();
- * 
+ *
  *   const handleUpdateName = (name: string) => {
  *     updateProfile({ name }, {
  *       onSuccess: () => {
@@ -79,7 +79,7 @@ export function useUserProfile() {
  *       },
  *     });
  *   };
- * 
+ *
  *   return (
  *     <Button onPress={() => handleUpdateName('New Name')} disabled={isPending}>
  *       Update Name
@@ -87,33 +87,33 @@ export function useUserProfile() {
  *   );
  * }
  * ```
- * 
+ *
  * @returns {UseMutationResult} React Query mutation result
  */
 export function useUpdateUserProfile() {
-  const { getAccessToken } = useAuth();
-  const queryClient = useQueryClient();
+	const { getAccessToken } = useAuth();
+	const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (updates: Partial<UserProfile>) => {
-      const token = await getAccessToken();
-      const response = await fetch('/api/user-profile', {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updates),
-      });
+	return useMutation({
+		mutationFn: async (updates: Partial<UserProfile>) => {
+			const token = await getAccessToken();
+			const response = await fetch("/api/user-profile", {
+				method: "PATCH",
+				headers: {
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(updates),
+			});
 
-      if (!response.ok) {
-        throw new Error('Failed to update user profile');
-      }
+			if (!response.ok) {
+				throw new Error("Failed to update user profile");
+			}
 
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-    },
-  });
+			return response.json();
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+		},
+	});
 }

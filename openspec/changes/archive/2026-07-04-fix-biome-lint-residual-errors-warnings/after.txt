@@ -1,0 +1,24 @@
+reporter/violations ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Some lint rules or assist actions reported some violations.
+  
+  i The following files have violations:
+  
+  - src/app/(auth)/welcome.tsx (1 warning)
+  - src/app/vip.tsx (2 warnings)
+  - src/hooks/useInterviewHistory.ts (3 warnings)
+  - src/hooks/useSTT.ts (3 warnings)
+  - src/hooks/useTTS.ts (1 warning)
+  - src/lib/sanity/schemas/interviewCompletion.ts (6 warnings)
+  - src/lib/sanity/schemas/interviewHistory.ts (13 warnings)
+  - src/lib/sanity/schemas/savedInterview.ts (2 warnings)
+  - src/lib/sanity/schemas/userProfile.ts (9 warnings)
+  
+  i The following lint rules have violations:
+  
+  Rule Name                                   Diagnostics
+  
+  lint/suspicious/noExplicitAny               40 (40 warnings)
+
+Checked 86 files in 55ms. No fixes applied.
+Found 40 warnings.
