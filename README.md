@@ -17,7 +17,7 @@ MockMate is a mobile app that helps users practice job interviews with AI-powere
 - 👑 **VIP Subscription** - Premium interviews and exclusive features via RevenueCat
 - 📊 **Progress Tracking** - Interview history with saved completions
 - 🔖 **Favorites** - Save interviews for later practice
-- 🔐 **Secure Authentication** - Google OAuth via Auth0
+- 🔐 **Secure Authentication** - Google OAuth via Appwrite
 - 🎤 **Voice Features** - Text-to-Speech (TTS) and Speech-to-Text (STT)
 - 🛍️ **In-App Shop** - Power-ups like Streak Freeze and Double XP
 
@@ -30,7 +30,7 @@ MockMate is a mobile app that helps users practice job interviews with AI-powere
 ### ✅ Complete
 - ✅ All 16 user-facing screens implemented
 - ✅ Complete interview flow (browse → practice → results → history)
-- ✅ Authentication with Auth0 (Google OAuth)
+- ✅ Authentication with Appwrite (Google OAuth)
 - ✅ Gamification system (XP, gems, quests, shop)
 - ✅ RevenueCat VIP subscription (purchase, restore, status sync)
 - ✅ Component library (15 components: 8 atoms + 7 molecules)
@@ -55,7 +55,7 @@ MockMate is a mobile app that helps users practice job interviews with AI-powere
 - iOS Simulator (macOS) or Android Emulator
 - Expo CLI (`npm install -g expo-cli`)
 - **Required accounts:**
-  - Auth0 (for authentication)
+  - Appwrite Cloud project (for Google OAuth authentication)
   - Sanity (for CMS/database)
   - RevenueCat (for subscriptions)
   - OpenAI-compatible API (for AI features)
@@ -73,39 +73,16 @@ MockMate is a mobile app that helps users practice job interviews with AI-powere
    cp .env.example .env
    ```
    
-   Edit `.env` with your credentials:
-   ```bash
-   # Auth0
-   EXPO_PUBLIC_AUTH0_DOMAIN=your-tenant.auth0.com
-   EXPO_PUBLIC_AUTH0_CLIENT_ID=your_client_id
-   
-   # Sanity
-   EXPO_PUBLIC_SANITY_PROJECT_ID=your_project_id
-   EXPO_PUBLIC_SANITY_DATASET=production
-   SANITY_API_TOKEN=sk_your_write_token
-   
-   # RevenueCat
-   EXPO_PUBLIC_REVENUECAT_API_KEY_IOS=your_ios_key
-   EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID=your_android_key
-   
-   # OpenAI-compatible API
-   OPENAI_API_KEY=your_api_key
-   OPENAI_BASE_URL=https://your-endpoint.com/v1
-   OPENAI_MODEL=gpt-4
-   OPENAI_TTS_MODEL=tts-1
-   OPENAI_STT_MODEL=whisper-1
-   ```
+   Edit `.env` with your credentials. Appwrite and Sanity vars go in
+   here. See `MockMate/.env.example` for the full list with placeholders.
 
-3. **Build and run development client**
+3. **Run in Expo Go (recommended for local dev)**
    ```bash
-   # iOS (requires macOS)
-   npx expo run:ios
-   
-   # Android
-   npx expo run:android
+   npx expo start
    ```
    
-   ⚠️ **Important:** Auth0 requires a development client - **Expo Go will not work**.
+   Press `i` for iOS simulator or `a` for Android emulator. No custom
+   development-client build required — Appwrite is Expo Go compatible.
 
 4. **Configure Sanity Studio (Required for data persistence)**
    
@@ -157,7 +134,7 @@ MockMate/
 │   │   │       ├── HeaderMetrics.tsx
 │   │   │       └── GoogleSignInButton.tsx
 │   │   ├── hooks/                     # 10 custom hooks
-│   │   │   ├── useAuth.ts             # Auth0 authentication
+│   │   │       ├── useAuth.ts             # Appwrite-backed auth bridge
 │   │   │   ├── useUserProfile.ts      # User data from Sanity
 │   │   │   ├── useInterviews.ts       # Interview queries
 │   │   │   ├── useSavedInterviews.ts  # Favorites management
@@ -171,7 +148,7 @@ MockMate/
 │   │   │   ├── sanity/
 │   │   │   │   ├── client.ts          # Sanity client config
 │   │   │   │   └── schemas/           # Document schemas
-│   │   │   ├── auth/                  # Auth0 config
+│   │   │   └── appwrite/             # Appwrite config + auth context
 │   │   │   ├── query/                 # React Query setup
 │   │   │   └── revenuecat/            # RevenueCat config
 │   │   ├── stores/                    # Zustand stores
@@ -206,7 +183,7 @@ MockMate/
 | **Styling** | Uniwind (Tailwind CSS v4) | Utility-first styling |
 | **State** | Zustand + React Query | Local + server state |
 | **Backend** | Sanity | Headless CMS/database |
-| **Auth** | Auth0 | Google OAuth |
+| **Auth** | Appwrite (react-native-appwrite) | Google OAuth |
 | **Payments** | RevenueCat | Subscription management |
 | **AI** | AI SDK + OpenAI | Chat, TTS, STT |
 | **Audio** | Expo AV | Audio playback/recording |
@@ -247,9 +224,9 @@ Home → Quests Tab → Complete Interview → Auto Quest Progress
 ## 🎨 Features in Detail
 
 ### Authentication
-- **Google OAuth** via Auth0
+- **Google OAuth** via Appwrite
 - Auto profile creation in Sanity on first login
-- Session management with token refresh
+- Session management with Appwrite SDK (cookies/AsyncStorage) and JWT issuance on demand
 - Logout with full state cleanup
 
 ### Interview System
@@ -285,22 +262,12 @@ Home → Quests Tab → Complete Interview → Auto Quest Progress
 
 ## 🔌 API Integration
 
-### Auth0
-```typescript
-// Configure in app.json
-{
-  "expo": {
-    "plugins": [
-      [
-        "react-native-auth0",
-        {
-          "domain": "your-tenant.auth0.com"
-        }
-      ]
-    ]
-  }
-}
-```
+### Appwrite
+Authentication is handled by Appwrite. See `MockMate/.env.example`
+under the "Appwrite Authentication" block for the four `EXPO_PUBLIC_*`
+vars plus `APPWRITE_JWT_SECRET`. The redirect scheme `mockmate` must
+be configured in `MockMate/app.json` and registered in your Appwrite
+project's Google OAuth provider.
 
 ### Sanity
 ```typescript
@@ -386,7 +353,7 @@ eas submit --platform android
 
 ### Environment Setup
 1. Configure EAS in `eas.json`
-2. Set secrets in EAS dashboard (Auth0, Sanity, RevenueCat, OpenAI)
+2. Set secrets in EAS dashboard (Appwrite project id + JWT secret, Sanity, RevenueCat, OpenAI)
 3. Configure app signing (iOS certificates, Android keystore)
 4. Submit for review
 
@@ -394,10 +361,11 @@ eas submit --platform android
 
 ## 🐛 Troubleshooting
 
-### "Auth0 not working"
-- Ensure you're using a dev client (not Expo Go)
-- Check `app.json` has Auth0 plugin configured
-- Verify callback URLs in Auth0 dashboard
+### "Appwrite auth failing"
+- Verify `EXPO_PUBLIC_APPWRITE_ENDPOINT` and `EXPO_PUBLIC_APPWRITE_PROJECT_ID` are set in your `.env`.
+- The redirect scheme `mockmate` must be registered in Appwrite Console → Authentication → Google provider.
+- Confirm the scheme is declared in `MockMate/app.json` (`"scheme": "mockmate"`).
+- For local dev only: set `EXPO_PUBLIC_DEV_AUTH_BYPASS=true` for a synthetic user (NEVER enable in production).
 
 ### "Sanity data not loading"
 - Check `SANITY_API_TOKEN` is set (write token)
