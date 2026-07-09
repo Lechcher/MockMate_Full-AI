@@ -367,6 +367,9 @@ eas submit --platform android
 - Confirm the scheme is declared in `MockMate/app.json` (`"scheme": "mockmate"`).
 - For local dev only: set `EXPO_PUBLIC_DEV_AUTH_BYPASS=true` for a synthetic user (NEVER enable in production).
 
+### "Bundling fails: Unable to resolve <relative path>"
+- Metro is serving a stale `require()` graph even though the file exists. Run `npm run dev:clean` from `MockMate/` to wipe caches and start Expo with `--clear`. See `docs/dev-workflow.md` for the full recovery flow and the `~core/appwrite` stable alias.
+
 ### "Sanity data not loading"
 - Check `SANITY_API_TOKEN` is set (write token)
 - Verify schema deployed with `sanity deploy`

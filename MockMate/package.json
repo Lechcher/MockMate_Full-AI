@@ -76,13 +76,13 @@
 		"typescript": "~5.9.2"
 	},
 	"scripts": {
-		"start": "expo start --clear",
-		"reset-project": "node ./scripts/reset-project.js",
+		"start": "expo start --clear --go",
 		"android": "expo run:android",
 		"ios": "expo run:ios",
 		"web": "expo start --web",
 		"lint": "expo lint",
 		"test": "jest",
+		"dev:clean": "rm -rf .expo/cache node_modules/.cache/metro node_modules/.cache/@expo ~/.expo/ios-simulator-app-cache ~/.expo/native-modules-cache && npx expo start --clear --go",
 		"check:native": "node --experimental-strip-types --no-warnings ./scripts/check-native-modules.ts"
 	},
 	"private": true,

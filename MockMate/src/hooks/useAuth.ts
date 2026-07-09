@@ -7,10 +7,10 @@
  */
 
 import { useState } from "react";
-import type { AppwriteUser } from "../../core/appwrite";
-import { createJWT, login, logout } from "../../core/appwrite";
-import { useAuthContext } from "../../lib/auth/AuthProvider";
-import type { Auth0User } from "../../types/user";
+import type { AppwriteUser } from "../core/appwrite";
+import { createJWT, login, logout } from "../core/appwrite";
+import { useAuthContext } from "../lib/auth/AuthProvider";
+import type { Auth0User } from "../types/user";
 
 interface UseAuthResult {
 	user: Auth0User | null;
