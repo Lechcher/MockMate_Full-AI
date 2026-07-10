@@ -1,6 +1,2 @@
-@import "tailwindcss";
-@import "uniwind";
-
-@theme {
-	--color-accent-green: #0de959;
-}
+@import 'tailwindcss';
+@import 'uniwind';
