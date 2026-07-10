@@ -15,7 +15,7 @@ Define the Appwrite-backed authentication contract for MockMate:
 
 ### Requirement: Appwrite Client Initialization
 
-The system SHALL initialize a single `Client` from `react-native-appwrite` at module load time, configured with `EXPO_PUBLIC_APPWRITE_ENDPOINT` and `EXPO_PUBLIC_APPWRITE_PROJECT_ID`. The client SHALL be used to create an `Account` service instance. If either env var is missing and `EXPO_PUBLIC_DEV_AUTH_BYPASS` is not `"true"`, the system SHALL throw a descriptive error on first access.
+The system SHALL initialize a single `Client` from `react-native-appwrite` at module load time, configured with `EXPO_PUBLIC_APPWRITE_ENDPOINT` and `EXPO_PUBLIC_APPWRITE_PROJECT_ID`. The client SHALL be used to create an `Account` service instance. Both the `Client` and the `Account` singleton SHALL be constructed exactly once at module load; hydration (`getCurrentUser`) and the OAuth login flow SHALL reuse the same singletons — no per-call `new Client()` / `new Account({ client })`. If either env var is missing and `EXPO_PUBLIC_DEV_AUTH_BYPASS` is not `"true"`, the system SHALL throw a descriptive error on first access.
 
 #### Scenario: App launches with valid env
 - **WHEN** the JS bundle evaluates and appwrite module is imported
@@ -24,6 +24,10 @@ The system SHALL initialize a single `Client` from `react-native-appwrite` at mo
 #### Scenario: Missing env in production
 - **WHEN** `EXPO_PUBLIC_APPWRITE_ENDPOINT` or `EXPO_PUBLIC_APPWRITE_PROJECT_ID` is unset and `EXPO_PUBLIC_DEV_AUTH_BYPASS` is not `"true"`
 - **THEN** the system SHALL throw an error message identifying which env var is missing
+
+#### Scenario: Repeated hydration call
+- **WHEN** layout re-renders and `getCurrentUser` is called twice in the same process
+- **THEN** both calls route through the same singleton `Client`; no duplicate clients are constructed.
 
 ### Requirement: Google OAuth Login via Appwrite
 
@@ -58,6 +62,31 @@ Appwrite SDK SHALL persist the active session within the app process. On app lau
 #### Scenario: Cold app start with no session
 - **WHEN** app launches and no previous login exists
 - **THEN** `getCurrentUser()` returns `null`, `useAuth().user` is `null`, and `isLoading` is `false`
+
+### Requirement: Guest Hydration Is Not An Error
+
+The system SHALL treat the first-call result of `account.get()` that
+returns `null` OR throws `AppwriteException` whose message matches
+the `role:\s*guests[\s\S]*?missing scopes[\s\S]*?account\s*[\]"]`
+pattern (i.e. `User (role: guests) missing scopes (["account"])`
+verbatim) as "no active session" — `useAuth().user` SHALL be set to
+`null`, `useAuth().error` SHALL remain `undefined`, and `isLoading`
+SHALL become `false`. The error SHALL NOT be logged via `console.error`
+on the guest-hydration path.
+
+#### Scenario: First cold launch with no session
+
+- **WHEN** app launches, no previous Appwrite session exists, and the SDK
+  calls `account.get()`
+- **THEN** no `AppwriteException` line appears in the JS log;
+  `useAuth().user` is `null`; `isLoading` is `false`; `error` is
+  `undefined`.
+
+#### Scenario: Cold launch with valid session
+
+- **WHEN** app launches and a previous valid session exists
+- **THEN** `account.get()` succeeds, `useAuth().user` is populated, no
+  error is logged.
 
 ### Requirement: Logout
 
@@ -102,3 +131,18 @@ The entire auth flow SHALL operate without custom native modules. No `@clerk/exp
 #### Scenario: Running in Expo Go
 - **WHEN** the app is launched via `expo start` inside Expo Go
 - **THEN** the auth flow (login, logout, session hydration) works without a custom development client and without any native module errors
+
+### Requirement: getCurrentUser returns authenticated user after setSession
+`getCurrentUser` SHALL return the authenticated `AppwriteUser` immediately after `client.setSession(secret)` has been called. Non-guest-scope errors SHALL be rethrown (not swallowed as `null`) so callers can distinguish a missing session from a transient failure.
+
+#### Scenario: Valid session returns user
+- **WHEN** `client.setSession(secret)` has been called with a valid session secret
+- **THEN** `getCurrentUser()` SHALL return an `AppwriteUser` with a non-empty `$id`
+
+#### Scenario: Guest scope error returns null
+- **WHEN** `account.get()` throws a guest-scope error (no active session)
+- **THEN** `getCurrentUser()` SHALL return `null` without throwing
+
+#### Scenario: Non-guest error is rethrown
+- **WHEN** `account.get()` throws an error that is NOT a guest-scope error (e.g., network timeout, rate limit)
+- **THEN** `getCurrentUser()` SHALL rethrow the error so the caller can handle it
